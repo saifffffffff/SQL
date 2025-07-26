@@ -1,0 +1,8 @@
+-- restoring full back up 
+RESTORE DATABASE database_name FROM DISK = 'path' ;
+
+-- restoting differentail bask up 
+
+- first restore the full back up 
+RESTORE DATABASE database_name FROM DISK = 'path_to_fullbackup' WITH NORECOVERY; --norecovery means that we will add another backups 
+RESTORE DATABASE database_name FROM DISK = 'path_to_differentialbackup' WITH RECOVERY -- recovery means that we finished the restoring the data
