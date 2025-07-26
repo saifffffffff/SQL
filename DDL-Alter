@@ -1,0 +1,14 @@
+-- Alter used to edit the table 
+
+
+-- deleting a column
+
+ALTER TABLE table_name DROP COLUMN column_name;
+
+-- add a new field
+
+ALTER TABLE table_name ADD filed_name datatype [constraint];
+
+-- edit column
+
+ALTER TABLE table_name ALTER COLUMN field_name datatype [constraint];
