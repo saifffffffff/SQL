@@ -1,0 +1,21 @@
+-- inserting single record
+
+INSERT INTO table_name VALUES ( v1 , v2 , v3 , ... );
+
+
+-- inserting multiple records 
+
+INSERT INTO table_name VALUES
+( v1 , v2 , v3 , ... ),
+( v1 , v2 , v3 , ... ),
+( v1 , v2 , v3 , ... ); 
+
+-- inserting specified fields (can be multiple)
+
+INSERT INTO table_name (field_name , field_name , ...) 
+Values (v1, v2, .... )
+
+
+-- note
+-always the specified values must contain all the not null fields because the remained fields will be assigned to null
+-you can write "null" to assign a field to null
