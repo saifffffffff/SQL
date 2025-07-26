@@ -1,0 +1,6 @@
+-- creating a database
+CREATE DATABAsE database_name;
+--creating a table
+
+USE database_name; -- to use a specific database
+CREATE TABLE table_name (  field_name datatype nullable, ...       );
