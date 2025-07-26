@@ -1,0 +1,7 @@
+-- creating full backup
+
+BACKUP DATABASE database_name TO DISK = 'path' ;
+
+-- creating differential backup
+
+BACKUP DATABASE database_name TO DISE = 'path' WITH DIFFERENTIAL;
