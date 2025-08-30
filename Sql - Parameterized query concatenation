@@ -1,0 +1,144 @@
+
+using System;
+using System.Data.SqlClient;
+
+
+
+
+namespace PracticeCSharp
+{
+
+
+   
+    class Program 
+
+    {
+        static string ConnectionString = "SERVER = localhost; Database = ContactsDB; User id = sa; Password = sa123456;";
+        static SqlConnection Connection = new SqlConnection(ConnectionString);
+
+
+
+        static void FindContactStartsWith(string StartWith) {
+
+            // sql allow string concatenation :                    like 'XXXX' + '%'
+            string query = "Select * From Contacts Where FirstName like @j + '%'";
+            try
+            {
+                var Command = new SqlCommand(query, Connection);
+                Command.Parameters.AddWithValue("@j", StartWith);
+
+                var Reader = Command.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    int ID = (int)Reader["ContactID"];
+                    string FirstName = (string)Reader["FirstName"];
+                    string LastName = (string)Reader["LastName"];
+                    string Address = (string)Reader["Address"];
+
+
+                    Console.WriteLine($"ID : {ID}");
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine($"Full Name : {FirstName} {LastName}");
+                    Console.WriteLine(string.Format("Adderss {0}", Address));
+                    Console.WriteLine("---------------------------------------");
+
+                    Console.WriteLine();
+
+                }
+                 Reader.Close();
+            }
+            catch (Exception ex){
+                Console.WriteLine("Error" + ex.Message);
+            }
+
+        
+        }
+        static void FindContactsEndWith(string EndWith)
+        {
+            string query = "Select * From Contacts Where FirstName like '%' + @j ";
+            try
+            {
+                var Command = new SqlCommand(query, Connection);
+                Command.Parameters.AddWithValue("@j", EndWith);
+
+                var Reader = Command.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    int ID = (int)Reader["ContactID"];
+                    string FirstName = (string)Reader["FirstName"];
+                    string LastName = (string)Reader["LastName"];
+                    string Address = (string)Reader["Address"];
+
+
+                    Console.WriteLine($"ID : {ID}");
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine($"Full Name : {FirstName} {LastName}");
+                    Console.WriteLine(string.Format("Adderss {0}", Address));
+                    Console.WriteLine("---------------------------------------");
+
+                    Console.WriteLine();
+                }
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+
+        }
+        static void FindContactsContains(string Contain) {
+            string query = "Select * From Contacts Where FirstName like '%' + @j + '%'";
+            try
+            {
+                var Command = new SqlCommand(query, Connection);
+                Command.Parameters.AddWithValue("@j", Contain);
+
+                var Reader = Command.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    int ID = (int)Reader["ContactID"];
+                    string FirstName = (string)Reader["FirstName"];
+                    string LastName = (string)Reader["LastName"];
+                    string Address = (string)Reader["Address"];
+
+
+                    Console.WriteLine($"ID : {ID}");
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine($"Full Name : {FirstName} {LastName}");
+                    Console.WriteLine(string.Format("Adderss {0}", Address));
+                    Console.WriteLine("---------------------------------------");
+
+                    Console.WriteLine();
+
+                }
+                Reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error" + ex.Message);
+            }
+
+        }
+        
+        static void Main(string[] args)
+        {
+            Connection.Open();
+            FindContactStartsWith("J");
+            FindContactStartsWith("ae");
+            FindContactStartsWith("e");
+            Connection.Close();
+           
+            
+        }
+    }
+
+
+}
+
+
+
+
+
