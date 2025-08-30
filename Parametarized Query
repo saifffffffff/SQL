@@ -1,0 +1,128 @@
+
+using System;
+using System.Data.SqlClient;
+
+
+
+
+namespace PracticeCSharp
+{
+
+
+   
+    class Program 
+
+    {
+        static string ConnectionString = "SERVER = localhost; Database = ContactsDB; User id = sa; Password = sa123456;";
+        static SqlConnection Connection = new SqlConnection(ConnectionString);
+
+
+
+        static void FindFirstName1(string FirstName) {
+
+            string query = "Select * From Contacts Where FirstName = @FirstName";
+
+            try
+            {
+                Connection.Open();
+
+
+                SqlCommand Command = new SqlCommand(query, Connection);
+                
+                Command.Parameters.AddWithValue("@FirstName", FirstName);
+                
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    int ID = (int)Reader["ContactID"];
+                    string LastName = (string)Reader["LastName"];
+                    string Address = (string)Reader["Address"];
+
+
+                    Console.WriteLine($"ID : {ID}");
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine($"Full Name : {FirstName} {LastName}");
+                    Console.WriteLine(string.Format("Adderss {0}", Address));
+                    Console.WriteLine("---------------------------------------");
+
+                    Console.WriteLine();
+
+                }
+
+                Reader.Close();
+
+            }
+
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error : " + ex.Message);
+
+            }
+
+        }
+        static void FindFirstName2(string FirstName)
+        {
+
+            string query = $"Select * From Contacts Where FirstName = '{FirstName}' ";
+
+            try
+            {
+
+
+                SqlCommand Command = new SqlCommand(query, Connection);
+
+                SqlDataReader Reader = Command.ExecuteReader();
+
+                while (Reader.Read())
+                {
+                    int ID = (int)Reader["ContactID"];
+                    string LastName = (string)Reader["LastName"];
+                    string Address = (string)Reader["Address"];
+
+
+                    Console.WriteLine($"ID : {ID}");
+                    Console.WriteLine("---------------------------------------");
+                    Console.WriteLine($"Full Name : {FirstName} {LastName}");
+                    Console.WriteLine(string.Format("Adderss {0}", Address));
+                    Console.WriteLine("---------------------------------------");
+
+                    Console.WriteLine();
+
+                }
+
+                Reader.Close();
+
+            }
+
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("Error : " + ex.Message);
+
+            }
+
+        }
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Method 1 : ");
+            FindFirstName1("Jane");
+            Console.WriteLine("\n\n\n");
+
+            Console.WriteLine("Method 2 : ");
+            FindFirstName2("Jane");
+
+            Connection.Close();
+           
+            
+        }
+    }
+
+
+}
+
+
+
+
+
