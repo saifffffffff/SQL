@@ -106,6 +106,9 @@ namespace PracticeCSharp
         }
         static void Main(string[] args)
         {
+
+            // method 1 is the best practice and avoids SQL injection
+            
             Console.WriteLine("Method 1 : ");
             FindFirstName1("Jane");
             Console.WriteLine("\n\n\n");
