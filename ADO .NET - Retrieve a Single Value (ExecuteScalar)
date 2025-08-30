@@ -1,0 +1,103 @@
+
+using System;
+using System.Data.SqlClient;
+
+
+
+
+namespace PracticeCSharp
+{
+
+
+   
+    class Program 
+
+    {
+        static string ConnectionString = "SERVER = localhost; Database = ContactsDB; User id = sa; Password = sa123456;";
+
+
+        static string FindFirstNameByID(int ID) {
+
+            SqlConnection Connection = new SqlConnection(connectionString : ConnectionString);
+
+            string query = "Select FirstName From Contacts where ContactID = @ID";
+
+            string FirstName = ""; 
+
+            try
+            {
+                Connection.Open();
+
+                SqlCommand Command = new SqlCommand(query, Connection);
+
+                Command.Parameters.AddWithValue("@ID", ID);
+
+                FirstName = (string)Command.ExecuteScalar(); // returns null if nothing found
+
+                if (FirstName == null)
+                    FirstName = "Empty";
+
+                Connection.Close();
+
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error : {ex.Message}");
+            }
+
+            return FirstName;
+        
+        }
+        static int ? FindIDByFullName (string FirstName , string LastName)
+        {
+            SqlConnection conn = new SqlConnection(connectionString: ConnectionString);
+
+
+            int? ID = null; // nullable
+
+            string query = "select * from Contacts where FirstName = @FN and LastName = @LN";
+
+            try
+            {
+                conn.Open();
+
+                SqlCommand command = new SqlCommand(query, conn);
+
+                command.Parameters.AddRange(new[] { new SqlParameter("@FN", FirstName), new SqlParameter("@LN", LastName) });
+
+                ID = (int)command.ExecuteScalar();
+
+                if (ID == null)
+                    ID = -1;
+
+                conn.Close();
+
+            }
+
+            catch (Exception ex) {
+                Console.WriteLine("Error : " + ex.Message);
+            }
+
+            return ID;
+
+        }
+        static void Main(string[] args)
+        {
+            // ExecuteScalar() : returns the first row first column.
+            // remember that the Scalar query is the query that returns a single value
+            // even if the query returned a result set the ExecuteScalar will return the first row first coloumn
+
+
+            Console.WriteLine("FirstName : " + FindFirstNameByID(1));
+            Console.WriteLine("FirstName : " + FindFirstNameByID(9));
+            Console.WriteLine("ID : " + FindIDByFullName("Jane", "Brown"));
+            
+        }
+    }
+
+
+}
+
+
+
+
+
