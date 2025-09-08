@@ -1,0 +1,210 @@
+using System;
+using System.Data;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // =========================
+        // 1️⃣ CREATE DATA TABLE
+        // =========================
+        DataTable Table = new DataTable("Koko");
+
+        // adding DataColumn object to be stored into DataColumnCollection 
+        Table.Columns.Add("ID", typeof(int));
+        Table.Columns.Add("FirstName", typeof(string));
+        Table.Columns.Add("LastName", typeof(string));
+        Table.Columns.Add("Country", typeof(string));
+        Table.Columns.AddRange(new DataColumn[]
+        {
+            new DataColumn("Salary", typeof(decimal)),
+            new DataColumn("DateOfBirth", typeof(DateTime))
+        });
+
+        // =========================
+        // 2️⃣ ADDING ROWS
+        // =========================
+        Table.Rows.Add(1, "saif", "Ahmad", "USA", 1100, new DateTime(2000, 1, 24));
+        Table.Rows.Add(2, "khaled", "Jamil", "jordan", 1300, new DateTime(2001, 1, 24));
+        Table.Rows.Add(3, "saif", "nael", "jordan", 600, new DateTime(1999, 1, 22));
+        Table.Rows.Add(4, "naif", "fahad", "saudi arabia", 800, new DateTime(2000, 1, 24));
+        Table.Rows.Add(5, "ahmad", "hazem", "jordan", 660, new DateTime(2005, 1, 24));
+
+        // Iterating over rows
+        PrintDataTable(Table);
+
+        // =========================
+        // 3️⃣ AGGREGATE FUNCTIONS
+        // =========================
+        int NumberOfRow;
+        double AverageSalary;
+        int MaxSalary;
+        int MinSalary;
+        int SumSalary;
+
+        NumberOfRow = Table.Rows.Count;
+        AverageSalary = Convert.ToDouble(Table.Compute("AVG(SALARY)", ""));
+        SumSalary = Convert.ToInt32(Table.Compute("Sum(Salary)", ""));
+        MaxSalary = Convert.ToInt32(Table.Compute("Max(Salary)", ""));
+        MinSalary = Convert.ToInt32(Table.Compute("Min(Salary)", ""));
+
+        Console.WriteLine("\nSalary Avg : {0} | Salary Sum : {1} | Max Salary : {2} | MinSalary : {3}", 
+            AverageSalary.ToString("F3"), SumSalary, MaxSalary, MinSalary);
+
+        // =========================
+        // 4️⃣ FILTERING ROWS
+        // =========================
+        // the Select Method returns an array of DataRow objects which match the filter
+        // changing anything in the array changes the original data table because they have the same reference
+        DataRow[] FilteredRows = Table.Select("FirstName = 'saif'"); // you can't use wildcards as in SQL
+        PrintDataTable(FilteredRows);
+
+        // Aggregate with filter expressions
+        AverageSalary = Convert.ToDouble(Table.Compute("AVG(SALARY)", "Country = 'Jordan'"));
+        SumSalary = Convert.ToInt32(Table.Compute("Sum(Salary)", "Country = 'Jordan'"));
+        MaxSalary = Convert.ToInt32(Table.Compute("Max(Salary)", "Country = 'Jordan'"));
+        MinSalary = Convert.ToInt32(Table.Compute("Min(Salary)", "Country = 'Jordan'"));
+
+        Console.WriteLine("Jordan Salaries Analysis");
+        Console.WriteLine("Salary Avg : {0} | Salary Sum : {1} | Max Salary : {2} | MinSalary : {3}", 
+            AverageSalary.ToString("F3"), SumSalary, MaxSalary, MinSalary);
+
+        string JordanUsaQuery = "Country = 'jordan' or Country = 'USA'";
+        AverageSalary = Convert.ToDouble(Table.Compute("AVG(SALARY)", JordanUsaQuery));
+        SumSalary = Convert.ToInt32(Table.Compute("Sum(Salary)", JordanUsaQuery));
+        MaxSalary = Convert.ToInt32(Table.Compute("Max(Salary)", JordanUsaQuery));
+        MinSalary = Convert.ToInt32(Table.Compute("Min(Salary)", JordanUsaQuery));
+
+        Console.WriteLine("Jordan/USA Salaries Analysis");
+        Console.WriteLine("Salary Avg : {0} | Salary Sum : {1} | Max Salary : {2} | MinSalary : {3}", 
+            AverageSalary.ToString("F3"), SumSalary, MaxSalary, MinSalary);
+
+        // =========================
+        // 5️⃣ ITERATING COLUMNS
+        // =========================
+        foreach (DataColumn col in Table.Columns)
+        {
+            Console.WriteLine($"Column Name: {col.ColumnName} | DataType: {col.DataType}");
+        }
+
+        // =========================
+        // 6️⃣ SORTING DATA TABLE (slow method)
+        // =========================
+        Table.DefaultView.Sort = "ID DESC";
+        Table = Table.DefaultView.ToTable();
+        PrintDataTable(Table);
+
+        Table.DefaultView.Sort = "FirstName ASC"; // you can add two sorting fields as in SQL
+        Table = Table.DefaultView.ToTable();
+        PrintDataTable(Table);
+
+        // =========================
+        // 7️⃣ DELETING ROWS
+        // =========================
+        Table.Rows[0].Delete();
+        Table.Rows.RemoveAt(0);
+        Table.Rows.Remove(Table.Rows[0]);
+
+        DataRow[] DataRowArray = Table.Select("ID = 1");
+        if (DataRowArray.Length > 0) DataRowArray[0].Delete();
+
+        PrintDataTable(Table);
+
+        // Table.AcceptChanges(); // if connected to a database, applies deletion
+
+        // =========================
+        // 8️⃣ UPDATING ROWS
+        // =========================
+        if (Table.Rows.Count > 0)
+        {
+            Table.Rows[0]["FirstName"] = "Maha";
+        }
+        PrintDataTable(Table);
+
+        // =========================
+        // 9️⃣ CLEARING ROWS
+        // =========================
+        Table.Rows.Clear();
+
+        // =========================
+        // 🔟 CONSTRAINTS
+        // =========================
+        // Adding primary key to table
+        DataTable dataTable = new DataTable();
+        var IDColumn = new DataColumn("ID", typeof(int));
+        dataTable.Columns.Add(IDColumn);
+
+        // it takes an array in case of composite primary keys 
+        dataTable.PrimaryKey = new DataColumn[] { IDColumn };
+
+        // ----------------------------
+        // Another table with constraints
+        DataTable DT = new DataTable();
+
+        DataColumn columnID = new DataColumn
+        {
+            DataType = typeof(int),
+            ColumnName = "ID",
+            AutoIncrement = true,
+            AutoIncrementSeed = 1,
+            AutoIncrementStep = 1
+        };
+
+        DataColumn columnFullName = new DataColumn
+        {
+            DataType = typeof(string), // corrected from int to string
+            ColumnName = "FullName",
+            AllowDBNull = false, // not null constraint
+            DefaultValue = "Empty", // default constraint
+            Unique = true // unique constraint
+        };
+
+        DataColumn columnSalary = new DataColumn
+        {
+            DataType = typeof(int),
+            ColumnName = "Salary",
+            AllowDBNull = false, // not null constraint
+            Unique = false // unique constraint removed for salary
+        };
+
+        DT.Columns.Add(columnID);
+        DT.Columns.Add(columnFullName);
+        DT.Columns.Add(columnSalary);
+
+        // Add a sample row
+        DataRow row = DT.NewRow();
+        row["FullName"] = "Ali";
+        row["Salary"] = 500;
+        DT.Rows.Add(row);
+
+        PrintDataTable(DT);
+    }
+
+    // =========================
+    // PRINT DATA TABLE FUNCTIONS
+    // =========================
+    static void PrintDataTable(DataTable table)
+    {
+        foreach (DataRow row in table.Rows)
+        {
+            foreach (DataColumn col in table.Columns)
+            {
+                Console.Write($"{row[col]} \t");
+            }
+            Console.WriteLine();
+        }
+    }
+
+    static void PrintDataTable(DataRow[] rows)
+    {
+        foreach (DataRow row in rows)
+        {
+            foreach (DataColumn col in row.Table.Columns)
+            {
+                Console.Write($"{row[col]} \t");
+            }
+            Console.WriteLine();
+        }
+    }
+}
