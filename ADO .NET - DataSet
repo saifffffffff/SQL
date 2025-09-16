@@ -1,0 +1,63 @@
+DataTable EmployeesTable = new DataTable();
+EmployeesTable.TableName = "Employees";
+
+DataColumn EmployeeID = new DataColumn();
+EmployeeID.ColumnName = "ID";
+EmployeeID.AutoIncrement = true;
+EmployeeID.AutoIncrementSeed = 1;
+EmployeeID.AutoIncrementStep = 1;
+EmployeeID.DataType = typeof(int);
+
+
+DataColumn FirstNameColumn = new DataColumn();
+FirstNameColumn.DataType = typeof(string);
+FirstNameColumn.ColumnName = "FirstName";
+FirstNameColumn.Caption = "First Name";
+FirstNameColumn.AllowDBNull = false;
+
+DataColumn LastNameColumn = new DataColumn();
+LastNameColumn.DataType = typeof(string);
+LastNameColumn.ColumnName = "LastName";
+LastNameColumn.Caption = "LastName Name";
+LastNameColumn.AllowDBNull = false;
+
+EmployeesTable.Columns.AddRange(new [] { EmployeeID, FirstNameColumn, LastNameColumn });
+
+EmployeesTable.PrimaryKey = new[] { EmployeeID };
+
+
+DataTable DepartmentsTable = new DataTable("Departments");
+
+DataColumn DepartmentID = new DataColumn();
+DepartmentID.AutoIncrement = true;
+DepartmentID.AutoIncrementSeed = 1;
+DepartmentID.AutoIncrementStep = 1;
+DepartmentID.DataType = typeof(int);
+DepartmentID.ColumnName = "ID";
+
+
+DataColumn DepartmentNameColumn = new DataColumn();
+DepartmentNameColumn.DataType = typeof(string);
+DepartmentNameColumn.ColumnName = "DepName";
+DepartmentNameColumn.Caption = "Department Name";
+DepartmentNameColumn.AllowDBNull = false;
+
+
+DepartmentsTable.Columns.AddRange(new[] { DepartmentID, DepartmentNameColumn });
+
+DepartmentsTable.PrimaryKey = new[] { DepartmentID };
+
+DataSet StoreDataBase = new DataSet();
+StoreDataBase.DataSetName = "Store DataBase";
+
+StoreDataBase.Tables.AddRange(new[] { EmployeesTable, DepartmentsTable });
+
+
+StoreDataBase.Tables["Employees"].Rows.Add(null, "saif", "aldeen");
+StoreDataBase.Tables["Employees"].Rows.Add(null, "Khaled", "Jamil");
+StoreDataBase.Tables["Employees"].Rows.Add(null, "Jasem", "mohammad");
+
+foreach (DataRow row in StoreDataBase.Tables["Employees"].Rows)
+{
+    Console.WriteLine($"ID : {row["ID"]} | FirstName : {row["FirstName"]} | LastName : {row["LastName"]}");
+}
